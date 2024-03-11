@@ -145,6 +145,8 @@ function activeChoice() {
             "https://mrfinesse47.github.io/tic-tac-toe/assets/icon-o-outline.svg")
         : (link =
             "https://mrfinesse47.github.io/tic-tac-toe/assets/icon-x-outline.svg");
+    document.querySelector(".player-2 p").textContent = "O (Player 2)";
+    document.querySelector(".player-1 p").textContent = "X (Player 1)";
   }
   document.documentElement.style.setProperty("--img-url", link);
   const styleElement = document.createElement("style");
