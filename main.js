@@ -60,16 +60,6 @@ spaces.forEach((space) => {
     if (filled === spaces.length) {
       gameover = true;
     }
-    if (filled == spaces.length - 1) {
-      if (!checkWin(turn) && !checkWin(opTurn)) {
-        tieScore = +tieScore + 1;
-        document.querySelector(".tie-score").textContent = tieScore;
-        setTimeout(() => {
-          result(winner);
-        }, 1000);
-        filled = 0;
-      }
-    }
     if (!space.classList.contains("filled") && !gameover) {
       let img = document.createElement("img");
       if (gameType == "player") {
@@ -90,6 +80,19 @@ spaces.forEach((space) => {
         if (gameType == "cpu") {
           cpuFill(opTurn);
         }
+      }
+      if (filled == spaces.length - 1) {
+        if (winner === null) {
+          console.log(winner);
+
+          tieScore = +tieScore + 1;
+          console.log(tieScore);
+          document.querySelector(".tie-score").textContent = tieScore;
+          setTimeout(() => {
+            result(winner);
+          }, 1000);
+        }
+        filled = 0;
       }
     }
   });
@@ -209,21 +212,22 @@ function cpuFill(turn) {
       gameover = true;
     }
     filled = document.querySelectorAll(".filled").length;
-    console.log(filled);
     if (filled === spaces.length) {
-      if (!checkWin(turn) && !checkWin(opTurn)) {
+      if (winner === null) {
+        console.log(winner);
         tieScore = +tieScore + 1;
+        console.log(tieScore + "a");
         document.querySelector(".tie-score").textContent = tieScore;
         setTimeout(() => {
           result(winner);
         }, 1000);
-        filled = 0;
       }
+      filled = 0;
     }
   }, 200);
 }
 
-function checkWin(winner) {
+function checkWin(winnerPlayer) {
   const winningCombinations = [
     [0, 1, 2], // Top row
     [3, 4, 5], // Middle row
@@ -251,9 +255,9 @@ function checkWin(winner) {
       const imgC = spaceC.querySelector("img");
 
       if (
-        imgA.src.includes(`icon-${winner}`) &&
-        imgB.src.includes(`icon-${winner}`) &&
-        imgC.src.includes(`icon-${winner}`)
+        imgA.src.includes(`icon-${winnerPlayer}`) &&
+        imgB.src.includes(`icon-${winnerPlayer}`) &&
+        imgC.src.includes(`icon-${winnerPlayer}`)
       ) {
         spaceA.classList.add("winning");
         spaceB.classList.add("winning");
@@ -269,21 +273,10 @@ function checkWin(winner) {
           space.classList.remove("winning");
         });
 
-        winner = winner;
-        if (winner === "x") {
-          xScore = +xScore + 1;
-          document.querySelector(".x-score").textContent = xScore;
-          setTimeout(() => {
-            result(winner);
-          }, 1000);
-        } else if (winner === "o") {
-          oScore = +oScore + 1;
-          document.querySelector(".o-score").textContent = oScore;
-          setTimeout(() => {
-            result(winner);
-          }, 1000);
+        winner = winnerPlayer;
+        if (winnerPlayer) {
+          addWinning(winnerPlayer);
         }
-        addWinning(winner);
         return true;
       }
     }
@@ -307,10 +300,30 @@ function addWinning(winner) {
       img.src = `https://mrfinesse47.github.io/tic-tac-toe/assets/icon-${winner}-dark-navy.svg`;
     }
   });
+  checkWinner(winner);
 }
 
 function getRandomIndex(max) {
   return Math.floor(Math.random() * max);
+}
+
+function checkWinner(winner) {
+  if (winner === "x") {
+    xScore = +xScore + 1;
+    console.log(xScore);
+    document.querySelector(".x-score").textContent = xScore;
+    setTimeout(() => {
+      result(winner);
+    }, 1000);
+  } else if (winner === "o") {
+    oScore = +oScore + 1;
+    console.log(oScore);
+    document.querySelector(".o-score").textContent = oScore;
+    setTimeout(() => {
+      result(winner);
+    }, 1000);
+  }
+  return;
 }
 
 function result(winner) {
